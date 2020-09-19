@@ -11,8 +11,6 @@ namespace Lesson07._2
     {
         static void Main(string[] args)
         {
-            int a = 1, b = 2;
-            a ^= b ^= a ^= b;
             Train[] trains = new Train[8];
             while (true)
             {

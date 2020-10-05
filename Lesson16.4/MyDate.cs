@@ -13,8 +13,15 @@ namespace Lesson16._4
         uint day, month, year;
         public MyDate(uint day, uint month, uint year)
         {
+            
             this.day = day;
-            this.month = month;
+            if (month <= 12)
+            {
+                this.month = month;
+            } else
+            {
+                throw new ArgumentException("Месяц не может быть больше 12ти");
+            }
             this.year = year;
         }
 
@@ -74,5 +81,94 @@ namespace Lesson16._4
             }
         }
 
+        public static MyDate operator +(MyDate date1, uint days)
+        {
+            FillUpYear();
+            if (days > 0)
+                FillAfterYear();
+            return date1;
+            
+
+            void FillUpYear()
+            {
+                uint[] months = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+                if (CheckYear(date1.year))
+                    months[1] = 29;
+                if(months[date1.month - 1] - date1.day + 1 > days)
+                {
+                    date1.day += days;
+                    days = 0;
+                } else
+                {
+                    if(date1.month == 12)
+                    {
+                        date1.month = 1;
+                        date1.year += 1;
+                    } else
+                    {
+                        date1.month += 1;
+                    }
+                    days -= months[date1.month - 1] + 1 - date1.day;
+                    date1.day = 1;
+                }
+                if(date1.month != 1)
+                {
+                    for (uint i = date1.month; i <= 11; i++)
+                    {
+                        if(months[i] > days)
+                        {
+                            date1.day += days;
+                            days = 0;
+                            break;
+                        }
+                        date1.month += 1;
+                        days -= months[i];
+                        if(i == 11)
+                        {
+                            date1.month = 1;
+                            date1.year += 1;
+                        }
+                    }
+                }
+
+            }
+            void FillAfterYear()
+            {
+                while(days >= 365)
+                {
+                    uint subDays = 365;
+                    if(CheckYear(date1.year))
+                    {
+                        if (days == 365)
+                            break;
+                        subDays = 366;
+                    }
+                    days -= subDays;
+                    date1.year += 1;
+                }
+                uint[] months = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+                if (CheckYear(date1.year))
+                    months[1] = 29;
+                uint daysInMonth = months[0];
+                int index = 0;
+                while (days > daysInMonth)
+                {
+                    date1.month += 1;
+                    days -= daysInMonth;
+                    index++;
+                    daysInMonth = months[index];
+                }
+                if(days > 0)
+                {
+                    date1.day += days;
+                    days = 0;
+                }
+            }
+            bool CheckYear(uint year)
+            {
+                return ((year % 4 == 0) && (year % 100 != 0)) ||
+                    ((year % 4 == 0) && (year % 100 == 0) && (year % 400 == 0));
+            }
+        }
     }
 }

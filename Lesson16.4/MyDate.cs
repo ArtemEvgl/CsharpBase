@@ -14,14 +14,14 @@ namespace Lesson16._4
         public MyDate(uint day, uint month, uint year)
         {
             
-            this.day = day;
-            if (month <= 12)
-            {
+            if(day >= DateTime.DaysInMonth((int)year, (int)month) && day != 0)
+                this.day = day;
+            else
+                throw new ArgumentException("День введен неправильно");
+            if (month <= 12)           
                 this.month = month;
-            } else
-            {
+             else
                 throw new ArgumentException("Месяц не может быть больше 12ти");
-            }
             this.year = year;
         }
 
